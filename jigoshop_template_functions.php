@@ -201,7 +201,7 @@ if (!function_exists('jigoshop_template_single_meta')) {
 	function jigoshop_template_single_meta( $post, $_product ) {
 		
 		?>
-		<div class="product_meta"><?php if ($_product->is_type('simple')) : ?><span class="sku">SKU: <?php echo $_product->sku; ?>.</span> <?php endif; ?><?php echo $_product->get_categories( ', ', 'Posted in ', '.'); ?> <?php echo $_product->get_tags( ', ', 'Tagged as ', '.'); ?></div>
+		<div class="product_meta"><?php if ($_product->is_type('simple') && get_option('jigoshop_enable_sku')=='yes') : ?><span class="sku">SKU: <?php echo $_product->sku; ?>.</span><?php endif; ?><?php echo $_product->get_categories( ', ', ' <span class="posted_in">Posted in ', '.</span>'); ?><?php echo $_product->get_tags( ', ', ' <span class="tagged_as">Tagged as ', '.</span>'); ?></div>
 		<?php
 		
 	}
@@ -242,6 +242,13 @@ if (!function_exists('jigoshop_simple_add_to_cart')) {
 		 	<?php do_action('jigoshop_add_to_cart_form'); ?>
 		</form>
 		<?php
+	}
+}
+if (!function_exists('jigoshop_virtual_add_to_cart')) {
+	function jigoshop_virtual_add_to_cart() {
+
+		jigoshop_simple_add_to_cart();
+		
 	}
 }
 if (!function_exists('jigoshop_downloadable_add_to_cart')) {
