@@ -4,6 +4,7 @@
  *
  * Various hooks Jigoshop uses to do stuff. index:
  *
+ *		- When default permalinks are enabled, redirect shop page to post type archive url
  *		- Add to Cart
  *		- Clear cart
  *		- Restore an order via a link
@@ -12,6 +13,21 @@
  *		- Order Status completed - GIVE DOWNLOADABLE PRODUCT ACCESS TO CUSTOMER
  *
  **/
+
+
+/**
+ * When default permalinks are enabled, redirect shop page to post type archive url
+ **/
+if (get_option( 'permalink_structure' )=="") add_action( 'init', 'jigoshop_shop_page_archive_redirect' );
+
+function jigoshop_shop_page_archive_redirect() {
+	
+	if ( isset($_GET['page_id']) && $_GET['page_id'] == get_option('jigoshop_shop_page_id') ) :
+		wp_safe_redirect( get_post_type_archive_link('product') );
+		exit;
+	endif;
+	
+}
 
 /**
  * Add to cart
@@ -167,6 +183,20 @@ function jigoshop_process_login() {
 		endif;
 	
 	endif;	
+}
+
+/**
+ * Process ajax checkout form
+ */
+add_action('wp_ajax_jigoshop-checkout', 'jigoshop_process_checkout');
+add_action('wp_ajax_nopriv_jigoshop-checkout', 'jigoshop_process_checkout');
+
+function jigoshop_process_checkout () {
+	include_once jigoshop::plugin_path() . '/classes/jigoshop_checkout.class.php';
+
+	jigoshop_checkout::instance()->process_checkout();
+	
+	die(0);
 }
 
 
