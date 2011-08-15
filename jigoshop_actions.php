@@ -46,7 +46,9 @@ function jigoshop_add_to_cart_action( $url = false ) {
 			if (isset($_POST['quantity'])) $quantity = $_POST['quantity'];
 			jigoshop_cart::add_to_cart($_GET['add-to-cart'], $quantity);
 			
-			jigoshop::add_message( sprintf(__('<a href="%s" class="button">View Cart &rarr;</a> Product successfully added to your basket.', 'jigoshop'), jigoshop_cart::get_cart_url()) );
+			if( get_option('jigoshop_directly_to_checkout', 'no') == 'no' ) :
+				jigoshop::add_message( sprintf(__('<a href="%s" class="button">View Cart &rarr;</a> Product successfully added to your basket.', 'jigoshop'), jigoshop_cart::get_cart_url()) );
+			endif;
 			
 		elseif ($_GET['add-to-cart']=='group') :
 			
@@ -58,7 +60,11 @@ function jigoshop_add_to_cart_action( $url = false ) {
 				foreach ($_POST['quantity'] as $item => $quantity) :
 					if ($quantity>0) :
 						jigoshop_cart::add_to_cart($item, $quantity);
-						jigoshop::add_message( sprintf(__('<a href="%s" class="button">View Cart &rarr;</a> Product successfully added to your basket.', 'jigoshop'), jigoshop_cart::get_cart_url()) );
+						
+						if( get_option('jigoshop_directly_to_checkout', 'no') == 'no' ) {
+							jigoshop::add_message( sprintf(__('<a href="%s" class="button">View Cart &rarr;</a> Product successfully added to your basket.', 'jigoshop'), jigoshop_cart::get_cart_url()) );
+						}
+						
 						$total_quantity = $total_quantity + $quantity;
 					endif;
 				endforeach;
@@ -83,6 +89,12 @@ function jigoshop_add_to_cart_action( $url = false ) {
 		// If has custom URL redirect there
 		if ( $url ) {
 			wp_safe_redirect( $url );
+			exit;
+		}
+		
+		// Redirect directly to checkout if no error messages
+		else if ( get_option('jigoshop_directly_to_checkout', 'no') == 'yes' && jigoshop::message_count() == 0 ) {
+			wp_safe_redirect( jigoshop_cart::get_checkout_url() );
 			exit;
 		}
 		
