@@ -160,7 +160,7 @@ class jigoshop_product {
 			$url = add_query_arg('add-to-cart', $this->id);
 		endif;
 		
-		$url = jigoshop::nonce_url( 'add_to_cart', $url );
+		$url = jigoshop::nonce_url( 'add_to_cart', $url ).'&lang='.$_GET['lang'];
 		return $url;
 	}
 	
