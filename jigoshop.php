@@ -380,7 +380,7 @@ function get_jigoshop_currency_symbol() {
 		case 'NOK' :
 		case 'PHP' :
 		case 'PLN' :
-		case 'SEK' :
+		case 'SEK' : $currency_symbol = 'kr'; break;
 		case 'CHF' :
 		case 'TWD' :
 		case 'THB' : $currency_symbol = $currency; break;
